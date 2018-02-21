@@ -140,10 +140,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75e837825e69b7545a0a64779099980a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  username: carmen
-  password: fan
-  teamspace: carmen
-  modelID: 66cb0cb3-704f-416b-994e-9b0afad35961
+  username: UnityDemo
+  password: 3DRepo
+  teamspace: UnityDemo
+  modelID: a87ad41b-6ef0-4f67-9c4a-3952f8f3f14a
 --- !u!4 &597467995
 Transform:
   m_ObjectHideFlags: 0
@@ -205,8 +205,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
+  near clip plane: 336.5606
+  far clip plane: 168280.3
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -231,13 +231,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 921121914}
-  m_LocalRotation: {x: 0.0919994, y: 0.3709486, z: -0.036960207, w: 0.9233456}
-  m_LocalPosition: {x: -30581.49, y: 33205.5, z: -31918.15}
+  m_LocalRotation: {x: 0.25890765, y: 0.39815846, z: -0.118212074, w: 0.8720451}
+  m_LocalPosition: {x: -11572.47, y: 20392.36, z: -8332.768}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 11.38, y: 43.775, z: 0}
+  m_LocalEulerAnglesHint: {x: 33.072, y: 49.081, z: 0}
 --- !u!1 &1276429560
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ namespace RepoForUnity.Utility
         private RepoWebClientInterface repoHttpClient;
         private Shader opaqueShader, transShader;
         private AddShaderControllerCallback attachComponentCallback;
+        private double[] worldOffset = null;
 
         internal ModelManager(RepoWebClientInterface repoHttpClient)
         {
@@ -45,7 +46,7 @@ namespace RepoForUnity.Utility
 
         private Model LoadModel(DataModels.JSONModels.AssetInfo modelInfo)
         {
-            
+
             var assetBundlesURI = modelInfo.vrAssets;
             if (modelInfo.vrAssets == null || modelInfo.vrAssets.Length == 0)
             {
@@ -59,10 +60,22 @@ namespace RepoForUnity.Utility
                 }
             }
 
+            Vector3 relativeOffset = Vector3.zero;
+
+            if (worldOffset == null)
+                worldOffset = modelInfo.offset;
+            else
+            {
+                relativeOffset = new Vector3((float)(modelInfo.offset[0] - worldOffset[0]),
+                                                (float)(modelInfo.offset[1] - worldOffset[1]),
+                                               (float)-(modelInfo.offset[2] - worldOffset[2])); //unity goes towards the other direction than WebGL
+            }
+
             GameObject[] gameObjects = new GameObject[assetBundlesURI.Length];
             SuperMeshInfo[] smInfo = new SuperMeshInfo[modelInfo.jsonFiles.Length];
 
-            for(int i = 0; i < modelInfo.jsonFiles.Length; ++i)
+            //TODO: this can be done asynchronously
+            for (int i = 0; i < modelInfo.jsonFiles.Length; ++i)
             {
                 smInfo[i] = ProcessSuperMeshInfo(repoHttpClient.LoadBundleJSON(modelInfo.jsonFiles[i]));
             }
@@ -73,12 +86,15 @@ namespace RepoForUnity.Utility
                 AssetBundle bundle =  repoHttpClient.LoadBundle(assetBundlesURI[i]);
 
                 var names = bundle.GetAllAssetNames();
-                gameObjects[i] = UnityEngine.Object.Instantiate(bundle.LoadAsset(names[0]) as GameObject);
+                var bundleObj = bundle.LoadAsset(names[0]) as GameObject;                
+                gameObjects[i] = UnityEngine.Object.Instantiate(bundleObj);
+                gameObjects[i].transform.position += relativeOffset;
+                gameObjects[i].name = bundleObj.name;
                 AttachShader(gameObjects[i], smInfo[i]);
                 bundle.Unload(false);
             }
 
-            return new Model(modelInfo.database + "." + modelInfo.model, gameObjects);
+            return new Model(modelInfo.database + "." + modelInfo.model, gameObjects, new Vector3((float)modelInfo.offset[0], (float)modelInfo.offset[1], (float)modelInfo.offset[2]));
         }
 
         private SuperMeshInfo ProcessSuperMeshInfo(AssetMapping assetMapping)
