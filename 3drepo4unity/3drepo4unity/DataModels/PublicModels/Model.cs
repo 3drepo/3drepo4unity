@@ -1,40 +1,57 @@
-﻿using System.Collections.Generic;
+﻿using RepoForUnity.DataModels.JSONModels;
+using RepoForUnity.Utility;
+using System.Collections.Generic;
 using UnityEngine;
 namespace RepoForUnity
 {
     public class Model
     {
         private Dictionary<string, SuperMeshInfo> superMeshes;
-        private GameObject root;
-        private string name;
-        private Vector3 offset;
+        private RepoWebClientInterface repoHttpClient;
+        public readonly GameObject root;
+        public readonly string name, teamspace, modelId, revisionId, units;
+        public readonly Vector3 offset, surveyPoint;
+        public readonly Vector2 latLong;
 
-        public string ModelName
-        {
-            get
-            {
-                return name;
-            }
-        }
+        //Angle (in degrees from north, clockwise)
+        public readonly float angleFromNorth = 0;
+        public readonly bool hasSurveyPoints = false;
 
-        public GameObject RootObject
-        {
-            get
-            {
-                return root;
-            }
-        }        
 
-        internal Model(string name, Dictionary<string, SuperMeshInfo> superMeshes, Vector3 offset)
+        internal Model(
+            string teamspace, 
+            string modelId, 
+            string revisionId, 
+            ModelSettings settings, 
+            Dictionary<string, SuperMeshInfo> superMeshes, 
+            Vector3 offset,
+            RepoWebClientInterface repoHttpClient)
         {
-            this.name = name;
+            this.teamspace = teamspace;
+            this.modelId = modelId;
+            this.revisionId = revisionId;
             this.superMeshes = superMeshes;
             this.offset = offset;
-            root = new GameObject(name);
+            this.repoHttpClient = repoHttpClient;
+
+            root = new GameObject(teamspace + "." + modelId);
             foreach(var smesh in superMeshes)
             {
                 smesh.Value.gameObj.transform.parent = root.transform;
             }
+
+            units = settings.properties.unit;
+            angleFromNorth = settings.angleFromNorth;
+
+
+            if(hasSurveyPoints = (settings.surveyPoints != null && settings.surveyPoints.Length > 0))
+            {
+                surveyPoint = new Vector3(settings.surveyPoints[0].position[0], settings.surveyPoints[0].position[1], settings.surveyPoints[0].position[2]);
+                latLong = new Vector2(settings.surveyPoints[0].latLong[0], settings.surveyPoints[0].latLong[1]);
+            }
+
+            name = settings.name;
+                
         }
 
         public string GetSubMeshID(string supermesh, int index)

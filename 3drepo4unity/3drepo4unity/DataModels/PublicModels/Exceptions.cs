@@ -9,4 +9,9 @@ namespace RepoForUnity
     {
         public RepoModelLoadingException(string err) : base(err) { }
     }
+
+    public class RepoNoValueException : Exception
+    {
+        public RepoNoValueException(string err) : base(err) { }
+    }
 }

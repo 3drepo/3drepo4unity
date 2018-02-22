@@ -37,4 +37,26 @@ namespace RepoForUnity.DataModels.JSONModels
         public int maxGeoCount;
         public Mapping[] mapping;
     }
+
+    [Serializable]
+    internal class ModelSettings
+    {
+        public string name;
+        public ModelSettingsProperties properties;
+        public SurveyPoint[] surveyPoints;
+        public float angleFromNorth;
+    }
+
+    [Serializable]
+    internal class SurveyPoint
+    {
+        public float[] position;
+        public float[] latLong;
+    }
+
+    [Serializable]
+    internal class ModelSettingsProperties
+    {
+        public string unit;
+    }
 }

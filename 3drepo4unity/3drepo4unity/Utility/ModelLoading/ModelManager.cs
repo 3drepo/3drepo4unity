@@ -73,6 +73,10 @@ namespace RepoForUnity.Utility
            
             Dictionary<string, SuperMeshInfo> supermeshes = new Dictionary<string, SuperMeshInfo>();
 
+            var revisionId = ExtractRevisionIDFromURI(assetBundlesURI[0]);
+
+            var settings = repoHttpClient.LoadModelSettings(modelInfo.database, modelInfo.model);
+
             //TODO: this can be done asynchronously
             for (int i = 0; i < modelInfo.jsonFiles.Length; ++i)
             {
@@ -97,7 +101,27 @@ namespace RepoForUnity.Utility
                 bundle.Unload(false);
             }
 
-            return new Model(modelInfo.database + "." + modelInfo.model, supermeshes, new Vector3((float)modelInfo.offset[0], (float)modelInfo.offset[1], (float)modelInfo.offset[2]));
+            return new Model(modelInfo.database, modelInfo.model, revisionId, settings,
+                supermeshes, new Vector3((float)modelInfo.offset[0], (float)modelInfo.offset[1], (float)modelInfo.offset[2]),
+                repoHttpClient);
+        }
+
+        private string ExtractRevisionIDFromURI(string uri)
+        {
+            string revId = null;
+            int index;
+            if((index = uri.LastIndexOf("/revision/")) != -1)
+            {
+                index += "/revision/".Length;
+                string substring = uri.Substring(index);
+                string rev = substring.Split('/')[0];
+                if(rev != "master")
+                {
+                    revId = rev;
+                }
+            }
+
+            return revId;
         }
 
         private SuperMeshInfo ProcessSuperMeshInfo(AssetMapping assetMapping)

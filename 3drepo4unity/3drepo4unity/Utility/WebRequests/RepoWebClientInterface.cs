@@ -54,5 +54,10 @@ namespace RepoForUnity.Utility
         {
             return HttpGetJson<AssetMapping>(domain + jsonURI);
         }
+
+        internal ModelSettings LoadModelSettings(string database, string model)
+        {
+            return HttpGetJson<ModelSettings>(domain + database + "/" + model + ".json");
+        }
     }
 }

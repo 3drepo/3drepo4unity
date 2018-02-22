@@ -54,11 +54,21 @@ public class ExampleScript : MonoBehaviour {
          */
         var models = client.LoadModel(teamspace, modelID, Shader.Find("3DRepo/Standard"), Shader.Find("3DRepo/StandardTransparent"), AttachShaderComponent);
 
+
+        DisplayModelInfo(models);
         IdentifyAMesh(models);
         
         
 
 
+    }
+
+    void DisplayModelInfo(RepoForUnity.Model[] models)
+    {
+        foreach(var model in models)
+        {
+            Debug.Log("Model " + model.teamspace + "." + model.modelId + " is called " + model.name + " modelled in " + model.units);
+        }
     }
 
     void IdentifyAMesh(RepoForUnity.Model[] models)
@@ -76,9 +86,9 @@ public class ExampleScript : MonoBehaviour {
          * Then identify the supermesh it belongs to. This is the name of the parent GameObject.
          */
          
-        var model = models.FirstOrDefault(item => item.ModelName == "UnityDemo.148333e9-e189-473c-9ac6-cc6adc790ab6");
+        var model = models.FirstOrDefault(item => item.modelId == "148333e9-e189-473c-9ac6-cc6adc790ab6");
         var meshID = model.GetSubMeshID("153cf665-2c84-4ff9-a9e2-ba495af8e6dc", 0);
-        Debug.Log("The first mesh within 153cf665-2c84-4ff9-a9e2-ba495af8e6dc is " + meshID);
+        Debug.Log("["+model.teamspace + "." + model.name+"]The first mesh within 153cf665-2c84-4ff9-a9e2-ba495af8e6dc is " + meshID);
     }
 
     public static void AttachShaderComponent(GameObject obj, int height, int width)
