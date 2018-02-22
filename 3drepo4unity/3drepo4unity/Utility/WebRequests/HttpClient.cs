@@ -125,7 +125,6 @@ namespace RepoForUnity.Utility
             request.Timeout = timeout_ms;
             request.CookieContainer = cookies;
             Console.WriteLine("GET " + uri + " TRY: " + tries);
-            UnityEngine.Debug.Log("GET " + uri + " TRY: " + tries);
 
             try
             {
@@ -135,7 +134,6 @@ namespace RepoForUnity.Utility
                 StreamReader responseReader = new StreamReader(responseStream);
                 string responseData = responseReader.ReadToEnd();
 
-                UnityEngine.Debug.Log(responseData);
                 JsonMapper.RegisterImporter<Double, Single>((Double value) =>
                 {
                     return (Single)value;
