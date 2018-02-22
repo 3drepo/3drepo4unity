@@ -104,12 +104,17 @@ namespace RepoForUnity.Utility
         {
             SuperMeshInfo info = new SuperMeshInfo();
             info.nSubMeshes = assetMapping.mapping.Length;
-
+            info.indexToID = new string[info.nSubMeshes];
 
             if (assetMapping.mapping.Length > 0)
             {
                 var supermeshID = assetMapping.mapping[0].usage[0];
                 info.name = supermeshID.Remove(supermeshID.LastIndexOf('_'));
+
+                for(int i = 0; i < assetMapping.mapping.Length; ++i)
+                {
+                    info.indexToID[i] = assetMapping.mapping[i].name;
+                }
             }
 
             return info;

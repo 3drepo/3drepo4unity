@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
@@ -71,7 +70,7 @@ namespace RepoForUnity.Utility
             request.ReadWriteTimeout = timeout_ms;
             request.Timeout = timeout_ms;
             request.CookieContainer = cookies;
-            Debug.Log("POST " + uri + " data: " + parameters);
+            Console.WriteLine("POST " + uri + " data: " + parameters);
 
             Stream postDataStream = request.GetRequestStream();
 
@@ -125,7 +124,7 @@ namespace RepoForUnity.Utility
             request.ReadWriteTimeout = timeout_ms;
             request.Timeout = timeout_ms;
             request.CookieContainer = cookies;
-            Debug.Log("GET " + uri + " TRY: " + tries);
+            Console.WriteLine("GET " + uri + " TRY: " + tries);
 
             try
             {
@@ -159,7 +158,7 @@ namespace RepoForUnity.Utility
         //    request.ReadWriteTimeout = timeout_ms;
         //    request.Timeout = timeout_ms;
         //    request.CookieContainer = cookies;
-        //    Debug.Log("GET " + uri + " TRY: " + tries);
+        //    Console.WriteLine("GET " + uri + " TRY: " + tries);
 
         //    try
         //    {
@@ -197,7 +196,7 @@ namespace RepoForUnity.Utility
             request.ReadWriteTimeout = timeout_ms;
             request.Timeout = timeout_ms;
             request.CookieContainer = cookies;
-            Debug.Log("GET " + uri + " TRY: " + tries);
+            Console.WriteLine("GET " + uri + " TRY: " + tries);
 
             try
             {

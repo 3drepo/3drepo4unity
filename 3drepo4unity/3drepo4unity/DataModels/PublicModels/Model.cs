@@ -36,6 +36,18 @@ namespace RepoForUnity
                 smesh.Value.gameObj.transform.parent = root.transform;
             }
         }
+
+        public string GetSubMeshID(string supermesh, int index)
+        {
+            string ret = null;
+
+            if(superMeshes.ContainsKey(supermesh) && superMeshes[supermesh].indexToID.Length > index)
+            {
+                ret = superMeshes[supermesh].indexToID[index];
+            }
+
+            return ret;
+        }
     }
 
     internal class SuperMeshInfo
@@ -43,5 +55,6 @@ namespace RepoForUnity
         internal string name;
         internal int nSubMeshes;
         internal GameObject gameObj;
+        internal string[] indexToID; //UV2 number to sub mesh ID
     }
 }
