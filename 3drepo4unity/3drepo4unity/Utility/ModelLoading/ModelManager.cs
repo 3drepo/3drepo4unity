@@ -70,14 +70,14 @@ namespace RepoForUnity.Utility
                                                 (float)(modelInfo.offset[1] - worldOffset[1]),
                                                (float)-(modelInfo.offset[2] - worldOffset[2])); //unity goes towards the other direction than WebGL
             }
-
-            GameObject[] gameObjects = new GameObject[assetBundlesURI.Length];
-            SuperMeshInfo[] smInfo = new SuperMeshInfo[modelInfo.jsonFiles.Length];
+           
+            Dictionary<string, SuperMeshInfo> supermeshes = new Dictionary<string, SuperMeshInfo>();
 
             //TODO: this can be done asynchronously
             for (int i = 0; i < modelInfo.jsonFiles.Length; ++i)
             {
-                smInfo[i] = ProcessSuperMeshInfo(repoHttpClient.LoadBundleJSON(modelInfo.jsonFiles[i]));
+                var info =  ProcessSuperMeshInfo(repoHttpClient.LoadBundleJSON(modelInfo.jsonFiles[i]));
+                supermeshes[info.name] = info;
             }
 
             //TODO: this can be done asynchronously
@@ -86,15 +86,18 @@ namespace RepoForUnity.Utility
                 AssetBundle bundle =  repoHttpClient.LoadBundle(assetBundlesURI[i]);
 
                 var names = bundle.GetAllAssetNames();
-                var bundleObj = bundle.LoadAsset(names[0]) as GameObject;                
-                gameObjects[i] = UnityEngine.Object.Instantiate(bundleObj);
-                gameObjects[i].transform.position += relativeOffset;
-                gameObjects[i].name = bundleObj.name;
-                AttachShader(gameObjects[i], smInfo[i]);
+                var bundleObj = bundle.LoadAsset(names[0]) as GameObject;
+                var superMeshName = bundleObj.name;
+                var gameObject = UnityEngine.Object.Instantiate(bundleObj);
+                gameObject.transform.position += relativeOffset;
+                gameObject.name = superMeshName;
+
+                supermeshes[superMeshName].gameObj = gameObject;
+                AttachShader(supermeshes[superMeshName]);
                 bundle.Unload(false);
             }
 
-            return new Model(modelInfo.database + "." + modelInfo.model, gameObjects, new Vector3((float)modelInfo.offset[0], (float)modelInfo.offset[1], (float)modelInfo.offset[2]));
+            return new Model(modelInfo.database + "." + modelInfo.model, supermeshes, new Vector3((float)modelInfo.offset[0], (float)modelInfo.offset[1], (float)modelInfo.offset[2]));
         }
 
         private SuperMeshInfo ProcessSuperMeshInfo(AssetMapping assetMapping)
@@ -102,12 +105,19 @@ namespace RepoForUnity.Utility
             SuperMeshInfo info = new SuperMeshInfo();
             info.nSubMeshes = assetMapping.mapping.Length;
 
+
+            if (assetMapping.mapping.Length > 0)
+            {
+                var supermeshID = assetMapping.mapping[0].usage[0];
+                info.name = supermeshID.Remove(supermeshID.LastIndexOf('_'));
+            }
+
             return info;
         }
 
-        private void AttachShader(GameObject obj, SuperMeshInfo info)
+        private void AttachShader(SuperMeshInfo info)
         {
-            var renderers = obj.GetComponentsInChildren<Renderer>();
+            var renderers = info.gameObj.GetComponentsInChildren<Renderer>();
             foreach (var r in renderers)
             {
                 var materials = r.sharedMaterials;

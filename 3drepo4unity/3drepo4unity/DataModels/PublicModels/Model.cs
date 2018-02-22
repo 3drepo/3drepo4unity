@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 namespace RepoForUnity
 {
     public class Model
     {
-        private GameObject[] gos;
+        private Dictionary<string, SuperMeshInfo> superMeshes;
         private GameObject root;
         private string name;
         private Vector3 offset;
@@ -16,30 +17,31 @@ namespace RepoForUnity
             }
         }
 
-        public GameObject[] ModelObjects
+        public GameObject RootObject
         {
             get
             {
-                return gos;
+                return root;
             }
         }        
 
-        public Model(string name, GameObject[] gos, Vector3 offset)
+        internal Model(string name, Dictionary<string, SuperMeshInfo> superMeshes, Vector3 offset)
         {
             this.name = name;
-            this.gos = gos;
+            this.superMeshes = superMeshes;
             this.offset = offset;
             root = new GameObject(name);
-            foreach(var go in gos)
+            foreach(var smesh in superMeshes)
             {
-                go.transform.parent = root.transform;
+                smesh.Value.gameObj.transform.parent = root.transform;
             }
         }
     }
 
     internal class SuperMeshInfo
     {
+        internal string name;
         internal int nSubMeshes;
-
+        internal GameObject gameObj;
     }
 }
