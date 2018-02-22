@@ -89,6 +89,25 @@ public class ExampleScript : MonoBehaviour {
         var model = models.FirstOrDefault(item => item.modelId == "148333e9-e189-473c-9ac6-cc6adc790ab6");
         var meshID = model.GetSubMeshID("153cf665-2c84-4ff9-a9e2-ba495af8e6dc", 0);
         Debug.Log("["+model.teamspace + "." + model.name+"]The first mesh within 153cf665-2c84-4ff9-a9e2-ba495af8e6dc is " + meshID);
+
+        GetMetadataInfo(model, meshID);
+    }
+
+    void GetMetadataInfo(RepoForUnity.Model model, string meshID)
+    {
+        /**
+         * Once you have identified an object, you can fetch it's metadata properties 
+         */
+        var metadataArr = model.GetMetadataInfo(meshID);
+        if(metadataArr != null)
+        {
+            Debug.Log(metadataArr.Length + " pieces of metadata found.");
+            foreach (var meta in metadataArr[0])
+            {
+                Debug.Log(meta);
+            }
+        }
+        
     }
 
     public static void AttachShaderComponent(GameObject obj, int height, int width)

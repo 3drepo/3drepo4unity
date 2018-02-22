@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using UnityEngine;
+using LitJson;
 
 namespace RepoForUnity.Utility
 {
@@ -58,7 +58,7 @@ namespace RepoForUnity.Utility
         protected T_out HttpPostJson<T_in, T_out>(string uri, T_in data)
         {
             // put together the json object with the login form data
-            string parameters = JsonUtility.ToJson(data);
+            string parameters = JsonMapper.ToJson(data);
             byte[] postDataBuffer = Encoding.UTF8.GetBytes(parameters);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
@@ -107,7 +107,7 @@ namespace RepoForUnity.Utility
                 }
             }
 
-            return JsonUtility.FromJson<T_out>(responseData);
+            return JsonMapper.ToObject<T_out>(responseData);
         }
 
         /// <summary>
@@ -125,6 +125,7 @@ namespace RepoForUnity.Utility
             request.Timeout = timeout_ms;
             request.CookieContainer = cookies;
             Console.WriteLine("GET " + uri + " TRY: " + tries);
+            UnityEngine.Debug.Log("GET " + uri + " TRY: " + tries);
 
             try
             {
@@ -134,13 +135,17 @@ namespace RepoForUnity.Utility
                 StreamReader responseReader = new StreamReader(responseStream);
                 string responseData = responseReader.ReadToEnd();
 
-                return JsonUtility.FromJson<T>(responseData);
+                UnityEngine.Debug.Log(responseData);
+                JsonMapper.RegisterImporter<Double, Single>((Double value) =>
+                {
+                    return (Single)value;
+                });
+                return JsonMapper.ToObject<T>(responseData);
             }
             catch (WebException ex)
             {
-                if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectFailure)
-                    if (--tries == 0)
-                        throw;
+                if (--tries == 0)
+                    throw;
 
                 return HttpGetJson<T>(uri, tries);
             }

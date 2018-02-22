@@ -44,6 +44,14 @@ namespace RepoForUnity.Utility
             return HttpGetJson<ModelAssetInfo>(domain + uri);
         }
 
+        internal Metadata GetMetadataByID(string teamspace, string modelId, string metadataId)
+        {
+            string uri = teamspace + "/" + modelId + "/meta/" + metadataId + ".json";
+            var metadataArr =  HttpGetJson<MetadataWrapper>(domain + uri);
+            return metadataArr.meta.Length > 0 ?  metadataArr.meta[0]  : null;
+
+        }
+
         internal AssetBundle LoadBundle(string assetURI)
         {
             var response = HttpGetURI(domain + assetURI);
@@ -55,9 +63,14 @@ namespace RepoForUnity.Utility
             return HttpGetJson<AssetMapping>(domain + jsonURI);
         }
 
-        internal ModelSettings LoadModelSettings(string database, string model)
+        internal ModelSettings LoadModelSettings(string teamspace, string model)
         {
-            return HttpGetJson<ModelSettings>(domain + database + "/" + model + ".json");
+            return HttpGetJson<ModelSettings>(domain + teamspace + "/" + model + ".json");
+        }
+
+        internal TreeWrapper FetchTree(string teamspace, string modelId, string revisionId)
+        {
+            return HttpGetJson<TreeWrapper>(domain + teamspace + "/" + modelId + "/revision/" +(revisionId == null? "master/head" : revisionId)+ "/fullTree.json");
         }
     }
 }

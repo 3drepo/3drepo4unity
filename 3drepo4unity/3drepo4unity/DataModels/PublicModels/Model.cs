@@ -7,15 +7,65 @@ namespace RepoForUnity
     public class Model
     {
         private Dictionary<string, SuperMeshInfo> superMeshes;
+        private Dictionary<string, TreeNode> meshInfo;
         private RepoWebClientInterface repoHttpClient;
+        private TreeNode treeRoot = null;
         public readonly GameObject root;
         public readonly string name, teamspace, modelId, revisionId, units;
         public readonly Vector3 offset, surveyPoint;
         public readonly Vector2 latLong;
 
+
         //Angle (in degrees from north, clockwise)
         public readonly float angleFromNorth = 0;
         public readonly bool hasSurveyPoints = false;
+
+        public TreeNode Tree
+        {
+            get
+            {
+                if(treeRoot == null)
+                {
+                    FetchTree();
+                }
+
+                return treeRoot;
+            }
+        }
+
+        public Dictionary<string, object>[] GetMetadataInfo(string nodeID)
+        {
+            if (meshInfo == null) FetchTree();
+            Dictionary<string, object>[] res = null;
+            Debug.Log("Getting metadata info for: " + nodeID);
+            Debug.Log("Getting metadata info for: " + meshInfo.ContainsKey(nodeID));
+            Debug.Log("Getting metadata info for: " + meshInfo[nodeID].meta);
+            Debug.Log("Getting metadata info for: " + meshInfo[nodeID].meta.Length);
+            if (meshInfo.ContainsKey(nodeID) && meshInfo[nodeID].meta != null && meshInfo[nodeID].meta.Length > 0)
+            {
+                Debug.Log("Instantiating res... Length is : " + meshInfo[nodeID].meta.Length);
+                res = new Dictionary<string, object>[meshInfo[nodeID].meta.Length];
+                for(int i = 0; i < meshInfo[nodeID].meta.Length; ++i)
+                {
+                    res[i] = repoHttpClient.GetMetadataByID(teamspace, modelId,  meshInfo[nodeID].meta[i]).metadata;
+                }
+            }
+
+            return res;
+        }
+
+        public string GetSubMeshID(string supermesh, int index)
+        {
+            string ret = null;
+
+            if (superMeshes.ContainsKey(supermesh) && superMeshes[supermesh].indexToID.Length > index)
+            {
+                ret = superMeshes[supermesh].indexToID[index];
+            }
+
+            return ret;
+        }
+
 
 
         internal Model(
@@ -54,16 +104,28 @@ namespace RepoForUnity
                 
         }
 
-        public string GetSubMeshID(string supermesh, int index)
+        private void FetchTree()
         {
-            string ret = null;
+            var treeWrapper = repoHttpClient.FetchTree(teamspace, modelId, revisionId);
 
-            if(superMeshes.ContainsKey(supermesh) && superMeshes[supermesh].indexToID.Length > index)
+            treeRoot = treeWrapper.mainTree.nodes;
+
+            meshInfo = new Dictionary<string, TreeNode>();
+            PopulateMeshInfo(treeRoot);
+        }
+
+        private void PopulateMeshInfo(TreeNode node)
+        {
+            Debug.Log("Populated node: " + node._id + " size of meshInfo: " + meshInfo.Count);
+            meshInfo[node._id] = node;
+            if(node.children != null)
             {
-                ret = superMeshes[supermesh].indexToID[index];
+                foreach (var child in node.children)
+                {
+                    PopulateMeshInfo(child);
+                }
             }
-
-            return ret;
+            
         }
     }
 

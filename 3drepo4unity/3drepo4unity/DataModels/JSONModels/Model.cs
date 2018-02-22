@@ -59,4 +59,41 @@ namespace RepoForUnity.DataModels.JSONModels
     {
         public string unit;
     }
+
+
+    [Serializable]
+    internal class TreeWrapper
+    {
+        public FullTree mainTree;
+    }
+
+    [Serializable]
+    internal class FullTree
+    {
+        public TreeNode nodes;
+    }
+
+    [Serializable]
+    public class TreeNode
+    {
+        public string name;
+        public string path;
+        public string _id;
+        public string shared_id;
+        public string type;
+        public TreeNode[] children;
+        public string[] meta;
+    }
+
+    [Serializable]
+    public class MetadataWrapper
+    {
+        public Metadata[] meta;
+    }
+
+    [Serializable]
+    public class Metadata
+    {
+        public Dictionary<String, object> metadata;
+    }
 }
