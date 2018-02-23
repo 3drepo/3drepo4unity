@@ -14,7 +14,7 @@
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- *  Author: Sebastian J Friston
+ *
  */
 
 using System.Collections.Generic;
@@ -30,12 +30,26 @@ namespace RepoForUnity.Utility
         private AddShaderControllerCallback attachComponentCallback;
         private double[] worldOffset = null;
 
+        /**
+         * Model Manager manages the construction of the Model Object.
+         * @param repoHttpClient takes a  RepoWebClientInterface connected to an API service
+         */
         internal ModelManager(RepoWebClientInterface repoHttpClient)
         {
             this.repoHttpClient = repoHttpClient;
         }
 
-        internal Model[] LoadModel(string teamspace, string modelID, string revisionId,
+        /**
+         * Load a Model. This may return multiple models if the specified model is a federation
+         * @params teamspace the teamspace this model resides in
+         * @params modelId ID of the model
+         * @param revisionId revision ID to load (null for latest)
+         * @param opaqueShader a Unity Opaque shader to be attached to the opaque mesh objects
+         * @param transparentShader a Unity Opaque shader to be attached to the translucent mesh objects
+         * @params callback a callback function to attach a controller to control the shader (null if not needed)
+         * @return returns the an array of models, containing the model information
+         */
+        internal Model[] LoadModel(string teamspace, string modelId, string revisionId,
             Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback)
         {
             List<Model> models = new List<Model>();
@@ -43,7 +57,7 @@ namespace RepoForUnity.Utility
             transShader = transparentShader;
             attachComponentCallback = callback;
 
-            var assetInfo = repoHttpClient.GetUnityAssetInfo(teamspace, modelID, revisionId);
+            var assetInfo = repoHttpClient.GetUnityAssetInfo(teamspace, modelId, revisionId);
 
             if (assetInfo != null)
             {
@@ -56,12 +70,17 @@ namespace RepoForUnity.Utility
             }
             else
             {
-                throw new RepoModelLoadingException("Failed to fetch Unity Asset Information for model: " + teamspace + "." + modelID);
+                throw new RepoModelLoadingException("Failed to fetch Unity Asset Information for model: " + teamspace + "." + modelId);
             }
 
             return models.ToArray();
         }
 
+        /**
+         * Load model given the model Info. This is typically called by the other LoadModel function.
+         * @param modelInfo an object containing URIs to model information, this is obtained by  RepoWebInterface::GetUnityAssetInfo()
+         * @return returns a model object containing model information
+         */
         private Model LoadModel(DataModels.JSONModels.AssetInfo modelInfo)
         {
 
@@ -91,7 +110,7 @@ namespace RepoForUnity.Utility
            
             Dictionary<string, SuperMeshInfo> supermeshes = new Dictionary<string, SuperMeshInfo>();
 
-            var revisionId = ExtractRevisionIDFromURI(assetBundlesURI[0]);
+            var revisionId = ExtractRevisionIdFromURI(assetBundlesURI[0]);
 
             var settings = repoHttpClient.LoadModelSettings(modelInfo.database, modelInfo.model);
 
@@ -124,7 +143,12 @@ namespace RepoForUnity.Utility
                 repoHttpClient);
         }
 
-        private string ExtractRevisionIDFromURI(string uri)
+        /**
+         * A utility function to extract revision ID from a URI
+         * @params uri uri to extract from
+         * @return returns the extracted revision ID. null if uri points to latest revision.
+         */
+        private string ExtractRevisionIdFromURI(string uri)
         {
             string revId = null;
             int index;
@@ -142,28 +166,41 @@ namespace RepoForUnity.Utility
             return revId;
         }
 
+        /**
+         * Given an AssetMapping object, process the information Super mesh information
+         * @params assetMapping an AssetMapping object to digest
+         * @return returns a SuperMeshInfo object containing the digested information. 
+         */
         private SuperMeshInfo ProcessSuperMeshInfo(AssetMapping assetMapping)
         {
             SuperMeshInfo info = new SuperMeshInfo();
             info.nSubMeshes = assetMapping.mapping.Length;
-            info.indexToID = new string[info.nSubMeshes];
+            info.indexToId = new string[info.nSubMeshes];
 
             if (assetMapping.mapping.Length > 0)
             {
-                var supermeshID = assetMapping.mapping[0].usage[0];
-                info.name = supermeshID.Remove(supermeshID.LastIndexOf('_'));
+                var supermeshId = assetMapping.mapping[0].usage[0];
+                info.name = supermeshId.Remove(supermeshId.LastIndexOf('_'));
 
                 for(int i = 0; i < assetMapping.mapping.Length; ++i)
                 {
-                    info.indexToID[i] = assetMapping.mapping[i].name;
+                    info.indexToId[i] = assetMapping.mapping[i].name;
                 }
             }
 
             return info;
         }
 
+        /**
+         * Given a SuperMeshInfo with game objects, attach the relevant shaders to the game objects.
+         * This function will find all MeshRenderers and attach the specified Opaque/Transparent shader
+         * where appropriate
+         * @param info SuperMeshInfo object that contains the GameObjects to attach shaders to
+         */
         private void AttachShader(SuperMeshInfo info)
         {
+            if (info.gameObj == null) return;
+
             var renderers = info.gameObj.GetComponentsInChildren<Renderer>();
             foreach (var r in renderers)
             {
@@ -179,8 +216,8 @@ namespace RepoForUnity.Utility
                 int height = 0;
                 int width = 0;
                 CalculateTextureSquare(info.nSubMeshes, out width, out height);
-                attachComponentCallback(r.gameObject, width, height);
-                
+                attachComponentCallback?.Invoke(r.gameObject, width, height);
+
             }
         }
 

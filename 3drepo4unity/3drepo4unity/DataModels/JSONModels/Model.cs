@@ -14,7 +14,7 @@
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- *  Author: Sebastian J Friston
+ *
  */
 
 using System;
@@ -43,7 +43,7 @@ namespace RepoForUnity.DataModels.JSONModels
     internal class Mapping
     {
         public string name;
-        public string sharedID;
+        public string sharedId;
         public float[] min;
         public float[] max;
         public string[] usage;
@@ -52,7 +52,7 @@ namespace RepoForUnity.DataModels.JSONModels
     [Serializable]
     internal class AssetMapping
     {
-        public int numberOfIDs;
+        public int numberOfIds;
         public int maxGeoCount;
         public Mapping[] mapping;
     }

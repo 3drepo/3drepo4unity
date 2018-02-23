@@ -14,7 +14,7 @@
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- *  Author: Sebastian J Friston
+ *
  */
 
 using RepoForUnity.DataModels;
@@ -69,10 +69,14 @@ namespace RepoForUnity
         }
 
         /**
-         * Load a 3D Model into Unity.
-         * @params teamspace teamspace where the model resides
-         * @param model where the model resides
-         * @return returns the object, Model, containing the model information
+         * Load a Model. This may return multiple models if the specified model is a federation
+         * @params teamspace the teamspace this model resides in
+         * @params modelId ID of the model
+         * @param revisionId revision ID to load (null for latest)
+         * @param opaqueShader a Unity Opaque shader to be attached to the opaque mesh objects
+         * @param transparentShader a Unity Opaque shader to be attached to the translucent mesh objects
+         * @params callback a callback function to attach a controller to control the shader (null if not needed)
+         * @return returns the an array of models, containing the model information
          */
         public Model[] LoadModel(string teamspace, string model, string revisionId,
             Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback)

@@ -14,7 +14,7 @@
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- *  Author: Sebastian J Friston
+ *
  */
 
 using RepoForUnity.DataModels.JSONModels;
@@ -34,13 +34,14 @@ namespace RepoForUnity
         public readonly string name, teamspace, modelId, revisionId, units;
         public readonly Vector3 offset, surveyPoint;
         public readonly Vector2 latLong;
-        
-
 
         //Angle (in degrees from north, clockwise)
         public readonly float angleFromNorth = 0;
         public readonly bool hasSurveyPoints = false;
 
+        /**
+         *  Obtain the Tree structure of the model
+         */
         public TreeNode Tree
         {
             get
@@ -54,41 +55,62 @@ namespace RepoForUnity
             }
         }
 
-        public string SharedIDtoUniqueID(string sharedID)
+        /**
+         * Get an object's unqiue ID based on a shared id
+         * @params sharedId a shared ID
+         * @return returns the corresponding unique id if none is found, return null; 
+         */
+        public string SharedIdtoUniqueId(string sharedId)
         {
             if (sharedIdToUniqueId == null) FetchTree();
             
-            return sharedIdToUniqueId.ContainsKey(sharedID) ? sharedIdToUniqueId[sharedID] : null;
+            return sharedIdToUniqueId.ContainsKey(sharedId) ? sharedIdToUniqueId[sharedId] : null;
         }
 
-        public Dictionary<string, object>[] GetMetadataInfo(string nodeID)
+        /**
+         * Get Metadata object based on it's unique ID. 
+         * @params nodeId The Id of the metadata object to fetch
+         * @return returns Key value pairs containing metadata information.
+         */
+        public Dictionary<string, object>[] GetMetadataInfo(string nodeId)
         {
             if (meshInfo == null) FetchTree();
             Dictionary<string, object>[] res = null;
-            if (meshInfo.ContainsKey(nodeID) && meshInfo[nodeID].meta != null && meshInfo[nodeID].meta.Length > 0)
+            if (meshInfo.ContainsKey(nodeId) && meshInfo[nodeId].meta != null && meshInfo[nodeId].meta.Length > 0)
             {
-                res = new Dictionary<string, object>[meshInfo[nodeID].meta.Length];
-                for(int i = 0; i < meshInfo[nodeID].meta.Length; ++i)
+                res = new Dictionary<string, object>[meshInfo[nodeId].meta.Length];
+                for(int i = 0; i < meshInfo[nodeId].meta.Length; ++i)
                 {
-                    res[i] = repoHttpClient.GetMetadataByID(teamspace, modelId, meshInfo[nodeID].meta[i]).metadata;
+                    res[i] = repoHttpClient.GetMetadataById(teamspace, modelId, meshInfo[nodeId].meta[i]).metadata;
                 }
             }
 
             return res;
         }
 
-        public string GetSubMeshID(string supermesh, int index)
+        /**
+         * Given the supermesh name and the index, returns the unique ID of the submesh
+         * @params supermesh name of the supermesh (an UUID)
+         * @params index index of the mesh (typically retrieved from UV2.y upon a raycast)
+         * @return returns the unique ID of the submesh found, null otherwise.
+         */
+        public string GetSubMeshId(string supermesh, int index)
         {
             string ret = null;
 
-            if (superMeshes.ContainsKey(supermesh) && superMeshes[supermesh].indexToID.Length > index)
+            if (superMeshes.ContainsKey(supermesh) && superMeshes[supermesh].indexToId.Length > index)
             {
-                ret = superMeshes[supermesh].indexToID[index];
+                ret = superMeshes[supermesh].indexToId[index];
             }
 
             return ret;
         }
 
+        /**
+         * Perform a metadata search, returning all metadata objects with the specified field name
+         * @param field name of the field to search for
+         * @return returns an array of metadata objects that contains this field, with the value of the field. 
+         */
         public MetaSearchResult[] GetAllMetadataWithField(string field)
         {
             return repoHttpClient.GetAllMetadataWithField(teamspace, modelId, revisionId, field);
@@ -131,6 +153,9 @@ namespace RepoForUnity
                 
         }
 
+        /*
+         * Fetch the tree information of this model. 
+         */
         private void FetchTree()
         {
             var treeWrapper = repoHttpClient.FetchTree(teamspace, modelId, revisionId);
@@ -142,6 +167,10 @@ namespace RepoForUnity
             PopulateMeshInfo(treeRoot);
         }
 
+        /**
+         * Populate all mesh entry caches with the tree node information.
+         * This is called recursively by FetchTree() 
+         */
         private void PopulateMeshInfo(TreeNode node)
         {
             meshInfo[node._id] = node;
@@ -162,6 +191,6 @@ namespace RepoForUnity
         internal string name;
         internal int nSubMeshes;
         internal GameObject gameObj;
-        internal string[] indexToID; //UV2 number to sub mesh ID
+        internal string[] indexToId; //UV2 number to sub mesh Id
     }
 }
