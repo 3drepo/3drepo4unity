@@ -1,4 +1,23 @@
-﻿using RepoForUnity.DataModels.JSONModels;
+﻿/*
+ *	Copyright (C) 2018 3D Repo Ltd
+ *
+ *	This program is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU Affero General Public License as
+ *	published by the Free Software Foundation, either version 3 of the
+ *	License, or (at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU Affero General Public License for more details.
+ *
+ *	You should have received a copy of the GNU Affero General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *  Author: Sebastian J Friston
+ */
+
+using RepoForUnity.DataModels.JSONModels;
 using RepoForUnity.Utility;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +33,7 @@ namespace RepoForUnity
         public readonly string name, teamspace, modelId, revisionId, units;
         public readonly Vector3 offset, surveyPoint;
         public readonly Vector2 latLong;
+        public readonly Dictionary<string, string> sharedIdToUniqueId;
 
 
         //Angle (in degrees from north, clockwise)
@@ -37,17 +57,12 @@ namespace RepoForUnity
         {
             if (meshInfo == null) FetchTree();
             Dictionary<string, object>[] res = null;
-            Debug.Log("Getting metadata info for: " + nodeID);
-            Debug.Log("Getting metadata info for: " + meshInfo.ContainsKey(nodeID));
-            Debug.Log("Getting metadata info for: " + meshInfo[nodeID].meta);
-            Debug.Log("Getting metadata info for: " + meshInfo[nodeID].meta.Length);
             if (meshInfo.ContainsKey(nodeID) && meshInfo[nodeID].meta != null && meshInfo[nodeID].meta.Length > 0)
             {
-                Debug.Log("Instantiating res... Length is : " + meshInfo[nodeID].meta.Length);
                 res = new Dictionary<string, object>[meshInfo[nodeID].meta.Length];
                 for(int i = 0; i < meshInfo[nodeID].meta.Length; ++i)
                 {
-                    res[i] = repoHttpClient.GetMetadataByID(teamspace, modelId,  meshInfo[nodeID].meta[i]).metadata;
+                    res[i] = repoHttpClient.GetMetadataByID(teamspace, modelId, meshInfo[nodeID].meta[i]).metadata;
                 }
             }
 
@@ -66,6 +81,10 @@ namespace RepoForUnity
             return ret;
         }
 
+        public MetaSearchResult[] GetAllMetadataWithField(string field)
+        {
+            return repoHttpClient.GetAllMetadataWithField(teamspace, modelId, revisionId, field);
+        }
 
 
         internal Model(
@@ -116,8 +135,8 @@ namespace RepoForUnity
 
         private void PopulateMeshInfo(TreeNode node)
         {
-            Debug.Log("Populated node: " + node._id + " size of meshInfo: " + meshInfo.Count);
             meshInfo[node._id] = node;
+            sharedIdToUniqueId[node.shared_id] = node._id;
             if(node.children != null)
             {
                 foreach (var child in node.children)

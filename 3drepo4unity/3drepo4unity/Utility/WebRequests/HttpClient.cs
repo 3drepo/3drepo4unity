@@ -1,4 +1,23 @@
-﻿using System;
+﻿/*
+ *	Copyright (C) 2018 3D Repo Ltd
+ *
+ *	This program is free software: you can redistribute it and/or modify
+ *	it under the terms of the GNU Affero General Public License as
+ *	published by the Free Software Foundation, either version 3 of the
+ *	License, or (at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	GNU Affero General Public License for more details.
+ *
+ *	You should have received a copy of the GNU Affero General Public License
+ *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ *  Author: Sebastian J Friston
+ */
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -150,39 +169,6 @@ namespace RepoForUnity.Utility
 
 
         }
-
-        //protected JsonData HttpGetJsonGeneric(string uri, int tries = 1)
-        //{
-        //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
-        //    request.Proxy = proxy;
-        //    request.Method = "GET";
-        //    request.Accept = "application/json";
-        //    //request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-        //    request.ReadWriteTimeout = timeout_ms;
-        //    request.Timeout = timeout_ms;
-        //    request.CookieContainer = cookies;
-        //    Console.WriteLine("GET " + uri + " TRY: " + tries);
-
-        //    try
-        //    {
-        //        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-        //        Stream responseStream = response.GetResponseStream();
-        //        StreamReader responseReader = new StreamReader(responseStream);
-        //        string responseData = responseReader.ReadToEnd();
-
-        //        return JsonMapper.ToObject(responseData);
-        //    }
-        //    catch (WebException ex)
-        //    {
-        //        if (ex.Status == WebExceptionStatus.Timeout || ex.Status == WebExceptionStatus.ConnectFailure)
-        //            if (--tries == 0)
-        //                throw;
-
-        //        return HttpGetJsonGeneric(uri, tries);
-        //    }
-
-        //}
 
         /// <summary>
         /// Sends a GET request to the specified URI and returns a Stream of bytes. 

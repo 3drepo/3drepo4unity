@@ -56,10 +56,8 @@ public class ExampleScript : MonoBehaviour {
 
 
         DisplayModelInfo(models);
-        IdentifyAMesh(models);
-        
-        
-
+        IdentifyAMeshAndFetchMetadata(models);
+        SearchMetadata(models);
 
     }
 
@@ -71,7 +69,14 @@ public class ExampleScript : MonoBehaviour {
         }
     }
 
-    void IdentifyAMesh(RepoForUnity.Model[] models)
+    void SearchMetadata(RepoForUnity.Model[] models)
+    {
+        var model = models.FirstOrDefault(item => item.modelId == "148333e9-e189-473c-9ac6-cc6adc790ab6");
+        var results = model.GetAllMetadataWithField("Floor");
+        Debug.Log(results.Length + " entries have the property \"Floor\"");
+    }
+
+    void IdentifyAMeshAndFetchMetadata(RepoForUnity.Model[] models)
     {
         /**
          * The following illustrate how you can identify a sub mesh within a supermesh after
@@ -106,8 +111,7 @@ public class ExampleScript : MonoBehaviour {
             {
                 Debug.Log(meta);
             }
-        }
-        
+        }        
     }
 
     public static void AttachShaderComponent(GameObject obj, int height, int width)
