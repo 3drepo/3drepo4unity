@@ -28,12 +28,13 @@ namespace RepoForUnity
         private Dictionary<string, SuperMeshInfo> superMeshes;
         private Dictionary<string, TreeNode> meshInfo;
         private RepoWebClientInterface repoHttpClient;
+        private Dictionary<string, string> sharedIdToUniqueId;
         private TreeNode treeRoot = null;
         public readonly GameObject root;
         public readonly string name, teamspace, modelId, revisionId, units;
         public readonly Vector3 offset, surveyPoint;
         public readonly Vector2 latLong;
-        public readonly Dictionary<string, string> sharedIdToUniqueId;
+        
 
 
         //Angle (in degrees from north, clockwise)
@@ -51,6 +52,13 @@ namespace RepoForUnity
 
                 return treeRoot;
             }
+        }
+
+        public string SharedIDtoUniqueID(string sharedID)
+        {
+            if (sharedIdToUniqueId == null) FetchTree();
+            
+            return sharedIdToUniqueId.ContainsKey(sharedID) ? sharedIdToUniqueId[sharedID] : null;
         }
 
         public Dictionary<string, object>[] GetMetadataInfo(string nodeID)
@@ -130,6 +138,7 @@ namespace RepoForUnity
             treeRoot = treeWrapper.mainTree.nodes;
 
             meshInfo = new Dictionary<string, TreeNode>();
+            sharedIdToUniqueId = new Dictionary<string, string>();
             PopulateMeshInfo(treeRoot);
         }
 

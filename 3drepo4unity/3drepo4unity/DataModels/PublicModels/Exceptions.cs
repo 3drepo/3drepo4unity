@@ -30,4 +30,9 @@ namespace RepoForUnity
     {
         public RepoNoValueException(string err) : base(err) { }
     }
+
+    public class RepoUnsupportedException : Exception
+    {
+        public RepoUnsupportedException(string err  = "This version of 3drepo4unity is no longer supported. Please update.") : base(err) { }
+    }
 }

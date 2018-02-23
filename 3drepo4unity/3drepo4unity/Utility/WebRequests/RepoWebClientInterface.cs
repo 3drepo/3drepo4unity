@@ -19,6 +19,7 @@
 
 using RepoForUnity.DataModels;
 using RepoForUnity.DataModels.JSONModels;
+using System.Linq;
 using UnityEngine;
 
 namespace RepoForUnity.Utility
@@ -92,6 +93,13 @@ namespace RepoForUnity.Utility
         internal TreeWrapper FetchTree(string teamspace, string modelId, string revisionId)
         {
             return HttpGetJson<TreeWrapper>(domain + teamspace + "/" + modelId + "/revision/" +(revisionId == null? "master/head" : revisionId)+ "/fullTree.json");
+        }
+
+        internal bool VersionCheck()
+        {
+            var versionInfo =  HttpGetJson<Version>(domain + "version");
+            //FIXME: current production version does not support unitydll yet. Remove the first conditino once new version has been released.
+            return versionInfo.unitydll == null || ( versionInfo.unitydll.current == Globals.version || versionInfo.unitydll.supported.FirstOrDefault(v => v == Globals.version) != null);
         }
     }
 }

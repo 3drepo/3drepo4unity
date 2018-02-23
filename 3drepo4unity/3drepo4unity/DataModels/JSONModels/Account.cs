@@ -51,4 +51,18 @@ namespace RepoForUnity.DataModels.JSONModels
         public string db;
         public string role;
     }
+
+    [Serializable]
+    internal class Version
+    {
+        public string VERSION;
+        public PluginVersionInfo unitydll;
+    }
+
+    [Serializable]
+    internal class PluginVersionInfo
+    {
+        public string current;
+        public string[] supported;
+    }
 }

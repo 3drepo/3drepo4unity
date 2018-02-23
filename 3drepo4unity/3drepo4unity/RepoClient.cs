@@ -50,6 +50,10 @@ namespace RepoForUnity
          */
         public bool Connect(string username, string password)
         {
+            if(!client.VersionCheck())
+            {
+                throw new RepoUnsupportedException();
+            }
             account = client.Login(username, password);
 
             return account != null;
