@@ -88,6 +88,10 @@ public class ExampleScript : MonoBehaviour {
 
     void SearchMetadata(RepoForUnity.Model[] models)
     {
+        /**
+         * The following illustrates how you would perform a metadata search.
+         * Here, I search for all metadata which has a property "Floor".
+         */
         var model = models.FirstOrDefault(item => item.modelId == "148333e9-e189-473c-9ac6-cc6adc790ab6");
         var results = model.GetAllMetadataWithField("Floor");
         Debug.Log(results.Length + " entries have the property \"Floor\"");
