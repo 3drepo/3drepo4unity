@@ -109,6 +109,7 @@ namespace RepoForUnity.Utility
             }
            
             Dictionary<string, SuperMeshInfo> supermeshes = new Dictionary<string, SuperMeshInfo>();
+            Dictionary<string, List<MeshLocation>> meshToLocations = new Dictionary<string, List<MeshLocation>>();
 
             var revisionId = ExtractRevisionIdFromURI(assetBundlesURI[0]);
 
@@ -117,7 +118,7 @@ namespace RepoForUnity.Utility
             //TODO: this can be done asynchronously
             for (int i = 0; i < modelInfo.jsonFiles.Length; ++i)
             {
-                var info =  ProcessSuperMeshInfo(repoHttpClient.LoadBundleJSON(modelInfo.jsonFiles[i]));
+                var info =  ProcessSuperMeshInfo(repoHttpClient.LoadBundleJSON(modelInfo.jsonFiles[i]), meshToLocations);
                 supermeshes[info.name] = info;
             }
 
@@ -139,7 +140,7 @@ namespace RepoForUnity.Utility
             }
 
             return new Model(modelInfo.database, modelInfo.model, revisionId, settings,
-                supermeshes, new Vector3((float)modelInfo.offset[0], (float)modelInfo.offset[1], (float)modelInfo.offset[2]),
+                supermeshes, meshToLocations, new Vector3((float)modelInfo.offset[0], (float)modelInfo.offset[1], (float)modelInfo.offset[2]),
                 repoHttpClient);
         }
 
@@ -171,7 +172,7 @@ namespace RepoForUnity.Utility
          * @params assetMapping an AssetMapping object to digest
          * @return returns a SuperMeshInfo object containing the digested information. 
          */
-        private SuperMeshInfo ProcessSuperMeshInfo(AssetMapping assetMapping)
+        private SuperMeshInfo ProcessSuperMeshInfo(AssetMapping assetMapping, Dictionary<string, List<MeshLocation>> meshLocations)
         {
             SuperMeshInfo info = new SuperMeshInfo();
             info.nSubMeshes = assetMapping.mapping.Length;
@@ -184,7 +185,13 @@ namespace RepoForUnity.Utility
 
                 for(int i = 0; i < assetMapping.mapping.Length; ++i)
                 {
-                    info.indexToId[i] = assetMapping.mapping[i].name;
+                    var meshId = assetMapping.mapping[i].name;
+                    info.indexToId[i] = meshId;
+                    if (!meshLocations.ContainsKey(meshId))
+                    {
+                        meshLocations[meshId] = new List<MeshLocation>();
+                    }
+                    meshLocations[meshId].Add(new MeshLocation(supermeshId, i));
                 }
             }
 

@@ -43,6 +43,7 @@ Shader "3DRepo/Standard" {
 	sampler2D _MatPropMapTex;
 	float _MapWidth;
 	float _MapHeight;
+	int _HiddenObject;
 	half _Glossiness;
 	half _Metallic;
 	fixed4 _Color;
@@ -59,6 +60,8 @@ Shader "3DRepo/Standard" {
 		int width = round(_MapWidth);
 		float row = index / height;
 		float col = index - (row * height);
+
+		if (index == _HiddenObject) discard;
 
 		float2 uvMap = float2(row / _MapWidth + 0.5 / _MapWidth, col / _MapHeight + 0.5 / _MapHeight);
 		fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * tex2D(_ColorMapTex, uvMap);

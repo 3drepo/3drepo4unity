@@ -26,6 +26,7 @@ namespace RepoForUnity
     public class Model
     {
         private Dictionary<string, SuperMeshInfo> superMeshes;
+        private Dictionary<string, List<MeshLocation>> meshToLocations;
         private Dictionary<string, TreeNode> meshInfo;
         private RepoWebClientInterface repoHttpClient;
         private Dictionary<string, string> sharedIdToUniqueId;
@@ -107,6 +108,23 @@ namespace RepoForUnity
         }
 
         /**
+         * Given a mesh ID, return the location of the mesh within the supermeshes
+         * A single mesh may be split across multiple supermeshes if it exceeds the maximum faces supported in Unity.
+         * @params meshID the id of the mesh 
+         * @retun returns an array of key value pairs, with (supermesh name, index)
+         */
+        public MeshLocation[] GetMeshLocation(string meshId)
+        {
+            if(meshToLocations.ContainsKey(meshId))
+            {
+                return meshToLocations[meshId].ToArray();
+            } else
+            {                
+                return new MeshLocation[] { };
+            }
+        }
+
+        /**
          * Perform a metadata search, returning all metadata objects with the specified field name
          * @param field name of the field to search for
          * @return returns an array of metadata objects that contains this field, with the value of the field. 
@@ -122,7 +140,8 @@ namespace RepoForUnity
             string modelId, 
             string revisionId, 
             ModelSettings settings, 
-            Dictionary<string, SuperMeshInfo> superMeshes, 
+            Dictionary<string, SuperMeshInfo> superMeshes,
+            Dictionary<string, List<MeshLocation>> meshToLocations,
             Vector3 offset,
             RepoWebClientInterface repoHttpClient)
         {
@@ -130,6 +149,7 @@ namespace RepoForUnity
             this.modelId = modelId;
             this.revisionId = revisionId;
             this.superMeshes = superMeshes;
+            this.meshToLocations = meshToLocations;
             this.offset = offset;
             this.repoHttpClient = repoHttpClient;
 
@@ -192,5 +212,16 @@ namespace RepoForUnity
         internal int nSubMeshes;
         internal GameObject gameObj;
         internal string[] indexToId; //UV2 number to sub mesh Id
+    }
+
+    public class MeshLocation
+    {
+        public string superMeshID;
+        public int index;
+        public MeshLocation(string id, int ind)
+        {
+            superMeshID = id;
+            index = ind;
+        }
     }
 }

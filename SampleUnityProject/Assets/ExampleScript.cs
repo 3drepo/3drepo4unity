@@ -28,6 +28,8 @@ public class ExampleScript : MonoBehaviour {
     public string teamspace;
     public string modelID;
 
+    internal RepoForUnity.Model[] models;
+
     // Use this for initialization
     void Start () {
         client = new RepoForUnity.RepoClient();
@@ -69,12 +71,12 @@ public class ExampleScript : MonoBehaviour {
          * Sample shaders and shader controller are provided within this project to demonstrate how 
          * to create a basic shader that works with 3D Repo meshes.
          */
-        var models = client.LoadModel(teamspace, modelID, Shader.Find("3DRepo/Standard"), Shader.Find("3DRepo/StandardTransparent"), AttachShaderComponent);
+        models = client.LoadModel(teamspace, modelID, Shader.Find("3DRepo/Standard"), Shader.Find("3DRepo/StandardTransparent"), AttachShaderComponent);
 
 
-        DisplayModelInfo(models);
-        IdentifyAMeshAndFetchMetadata(models);
-        SearchMetadata(models);
+        //DisplayModelInfo(models);
+        //IdentifyAMeshAndFetchMetadata(models);
+        //SearchMetadata(models);
 
     }
 
@@ -113,7 +115,7 @@ public class ExampleScript : MonoBehaviour {
          */
          
         var model = models.FirstOrDefault(item => item.modelId == "148333e9-e189-473c-9ac6-cc6adc790ab6");
-        var meshID = model.GetSubMeshID("153cf665-2c84-4ff9-a9e2-ba495af8e6dc", 0);
+        var meshID = model.GetSubMeshId("153cf665-2c84-4ff9-a9e2-ba495af8e6dc", 0);
         Debug.Log("["+model.teamspace + "." + model.name+"]The first mesh within 153cf665-2c84-4ff9-a9e2-ba495af8e6dc is " + meshID);
 
         GetMetadataInfo(model, meshID);

@@ -33,6 +33,20 @@ public class RepoShaderController : MonoBehaviour
         UpdateShaderProperties();
     }
 
+    public void HideObject(int index) {
+        foreach (Material m in GetComponent<Renderer>().sharedMaterials)
+        {
+            m.SetInt("_HiddenObject", index);
+        }
+    }
+
+    public void UnhideObject()
+    {
+        foreach (Material m in GetComponent<Renderer>().sharedMaterials)
+        {
+            m.SetInt("_HiddenObject", -1);
+        }
+    }
 
     /**
     * Update shader properties
@@ -43,6 +57,7 @@ public class RepoShaderController : MonoBehaviour
         {
             m.SetFloat("_MapHeight", height);
             m.SetFloat("_MapWidth", width);
+            m.SetInt("_HiddenObject", -1);
         }
 
     }
