@@ -243,6 +243,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\CutMesh.cs" />
     <Compile Include="Assets\ExampleScript.cs" />
     <Compile Include="Assets\HideObjects.cs" />
     <Compile Include="Assets\Resources\RepoShaderController.cs" />

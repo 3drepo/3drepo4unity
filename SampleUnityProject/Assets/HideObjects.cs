@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/**
+ * This file demostrate how a developer can code something to hide a mesh.
+ * To run this, enable the game object in your scene and hit '1' to trigger the hide object. This should hide the tree from view.
+ * Hidden functionality is implemented within the shader. This example only demostate how you can hide a single object within a supermesh
+ * This can then be adapted to hide multiple meshes within a supermesh by implementing the shader to support multiple indices (potentially by means of introducing a new texture)
+ * 
+ * This can also be adapted to do highlighting by o.Albedo to base on the index.
+ */
+
 public class HideObjects : MonoBehaviour {
 
     public ExampleScript rootScript = null;
