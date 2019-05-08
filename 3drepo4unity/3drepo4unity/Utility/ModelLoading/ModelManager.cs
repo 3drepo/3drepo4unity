@@ -135,12 +135,15 @@ namespace RepoForUnity.Utility
                 gameObject.transform.position += relativeOffset;
                 gameObject.name = superMeshName;
 
-                foreach(var meshFilter in gameObject.GetComponentsInChildren<MeshFilter>())
+                if (addPhyCollider)
                 {
-                    var collider = meshFilter.gameObject.AddComponent<MeshCollider>();
-                    collider.sharedMesh = meshFilter.mesh;
-                }
+                    foreach (var meshFilter in gameObject.GetComponentsInChildren<MeshFilter>())
+                    {
+                        var collider = meshFilter.gameObject.AddComponent<MeshCollider>();
+                        collider.sharedMesh = meshFilter.mesh;
+                    }
 
+                }
                 supermeshes[superMeshName].gameObj = gameObject;
                 AttachShader(supermeshes[superMeshName]);
                 bundle.Unload(false);
