@@ -27,6 +27,7 @@ namespace RepoForUnity
     {
         private Dictionary<string, SuperMeshInfo> superMeshes;
         private Dictionary<string, List<MeshLocation>> meshToLocations;
+        Dictionary<string, Bounds> meshBboxEntries;
         private Dictionary<string, TreeNode> meshInfo;
         private RepoWebClientInterface repoHttpClient;
         private Dictionary<string, string> sharedIdToUniqueId;
@@ -108,6 +109,15 @@ namespace RepoForUnity
         }
 
         /**
+         * Returns the bounding box of the given Mesh ID
+         * @params Unique ID of mesh
+         * @return returns the bounding box in Unity Bounds object
+         */
+        public Bounds GetMeshBoundingBox(string meshId) {
+            return meshBboxEntries[meshId];
+        }
+
+        /**
          * Given a mesh ID, return the location of the mesh within the supermeshes
          * A single mesh may be split across multiple supermeshes if it exceeds the maximum faces supported in Unity.
          * @params meshID the id of the mesh 
@@ -142,6 +152,7 @@ namespace RepoForUnity
             ModelSettings settings, 
             Dictionary<string, SuperMeshInfo> superMeshes,
             Dictionary<string, List<MeshLocation>> meshToLocations,
+            Dictionary<string, Bounds> meshBboxEntries,
             Vector3 offset,
             RepoWebClientInterface repoHttpClient)
         {
@@ -150,6 +161,7 @@ namespace RepoForUnity
             this.revisionId = revisionId;
             this.superMeshes = superMeshes;
             this.meshToLocations = meshToLocations;
+            this.meshBboxEntries = meshBboxEntries;
             this.offset = offset;
             this.repoHttpClient = repoHttpClient;
 

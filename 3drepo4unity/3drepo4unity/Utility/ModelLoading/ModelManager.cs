@@ -50,7 +50,7 @@ namespace RepoForUnity.Utility
          * @return returns the an array of models, containing the model information
          */
         internal Model[] LoadModel(string teamspace, string modelId, string revisionId,
-            Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback)
+            Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback, bool addPhyCollider)
         {
             List<Model> models = new List<Model>();
             this.opaqueShader = opaqueShader;
@@ -63,7 +63,7 @@ namespace RepoForUnity.Utility
             {
                 foreach(var modelAssetInfo in assetInfo.models)
                 {
-                    var subModel = LoadModel(modelAssetInfo);
+                    var subModel = LoadModel(modelAssetInfo, addPhyCollider);
                     if (subModel != null)
                         models.Add(subModel);
                 }
@@ -81,7 +81,7 @@ namespace RepoForUnity.Utility
          * @param modelInfo an object containing URIs to model information, this is obtained by  RepoWebInterface::GetUnityAssetInfo()
          * @return returns a model object containing model information
          */
-        private Model LoadModel(DataModels.JSONModels.AssetInfo modelInfo)
+        private Model LoadModel(DataModels.JSONModels.AssetInfo modelInfo, bool addPhyCollider)
         {
 
             var assetBundlesURI = modelInfo.vrAssets;
@@ -110,6 +110,7 @@ namespace RepoForUnity.Utility
            
             Dictionary<string, SuperMeshInfo> supermeshes = new Dictionary<string, SuperMeshInfo>();
             Dictionary<string, List<MeshLocation>> meshToLocations = new Dictionary<string, List<MeshLocation>>();
+            Dictionary<string, Bounds> meshBboxEntries = new Dictionary<string, Bounds>();
 
             var revisionId = ExtractRevisionIdFromURI(assetBundlesURI[0]);
 
@@ -118,7 +119,7 @@ namespace RepoForUnity.Utility
             //TODO: this can be done asynchronously
             for (int i = 0; i < modelInfo.jsonFiles.Length; ++i)
             {
-                var info =  ProcessSuperMeshInfo(repoHttpClient.LoadBundleJSON(modelInfo.jsonFiles[i]), meshToLocations);
+                var info =  ProcessSuperMeshInfo(repoHttpClient.LoadBundleJSON(modelInfo.jsonFiles[i]), meshToLocations, meshBboxEntries);
                 supermeshes[info.name] = info;
             }
 
@@ -134,13 +135,19 @@ namespace RepoForUnity.Utility
                 gameObject.transform.position += relativeOffset;
                 gameObject.name = superMeshName;
 
+                foreach(var meshFilter in gameObject.GetComponentsInChildren<MeshFilter>())
+                {
+                    var collider = meshFilter.gameObject.AddComponent<MeshCollider>();
+                    collider.sharedMesh = meshFilter.mesh;
+                }
+
                 supermeshes[superMeshName].gameObj = gameObject;
                 AttachShader(supermeshes[superMeshName]);
                 bundle.Unload(false);
             }
 
             return new Model(modelInfo.database, modelInfo.model, revisionId, settings,
-                supermeshes, meshToLocations, new Vector3((float)modelInfo.offset[0], (float)modelInfo.offset[1], (float)modelInfo.offset[2]),
+                supermeshes, meshToLocations, meshBboxEntries, new Vector3((float)modelInfo.offset[0], (float)modelInfo.offset[1], (float)modelInfo.offset[2]),
                 repoHttpClient);
         }
 
@@ -167,12 +174,16 @@ namespace RepoForUnity.Utility
             return revId;
         }
 
+        private Vector3 ArrayToVector3d(float[] arr) {
+            return new Vector3(arr[0], arr[1], arr[2]);
+        }
+
         /**
          * Given an AssetMapping object, process the information Super mesh information
          * @params assetMapping an AssetMapping object to digest
          * @return returns a SuperMeshInfo object containing the digested information. 
          */
-        private SuperMeshInfo ProcessSuperMeshInfo(AssetMapping assetMapping, Dictionary<string, List<MeshLocation>> meshLocations)
+        private SuperMeshInfo ProcessSuperMeshInfo(AssetMapping assetMapping, Dictionary<string, List<MeshLocation>> meshLocations, Dictionary<string, Bounds> meshBboxEntries)
         {
             SuperMeshInfo info = new SuperMeshInfo();
             info.nSubMeshes = assetMapping.mapping.Length;
@@ -192,6 +203,17 @@ namespace RepoForUnity.Utility
                         meshLocations[meshId] = new List<MeshLocation>();
                     }
                     meshLocations[meshId].Add(new MeshLocation(supermeshId, i));
+                    Bounds bbox = new Bounds();
+                    bbox.SetMinMax(ArrayToVector3d(assetMapping.mapping[i].min), ArrayToVector3d(assetMapping.mapping[i].max));
+                    if (!meshBboxEntries.ContainsKey(meshId))
+                    {
+                        meshBboxEntries[meshId] = bbox;                        
+                    } else
+                    {
+                        meshBboxEntries[meshId].Encapsulate(bbox);
+                    }
+                    
+
                 }
             }
 

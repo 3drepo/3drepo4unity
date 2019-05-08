@@ -245,6 +245,7 @@
   <ItemGroup>
     <Compile Include="Assets\CutMesh.cs" />
     <Compile Include="Assets\ExampleScript.cs" />
+    <Compile Include="Assets\GetBoundingBox.cs" />
     <Compile Include="Assets\HideObjects.cs" />
     <Compile Include="Assets\Resources\RepoShaderController.cs" />
   </ItemGroup>

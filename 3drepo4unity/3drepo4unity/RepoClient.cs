@@ -79,9 +79,9 @@ namespace RepoForUnity
          * @return returns the an array of models, containing the model information
          */
         public Model[] LoadModel(string teamspace, string model, string revisionId,
-            Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback)
+            Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback, bool addPhysCollider = false)
         {
-            return modelManager.LoadModel(teamspace, model, revisionId, opaqueShader, transparentShader, callback);
+            return modelManager.LoadModel(teamspace, model, revisionId, opaqueShader, transparentShader, callback, addPhysCollider);
         }
 
         /**
@@ -90,7 +90,7 @@ namespace RepoForUnity
          * @param model where the model resides
          * @return returns the object, Model, containing the model information
          */
-        public Model[] LoadModel(string teamspace, string model, Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback)
+        public Model[] LoadModel(string teamspace, string model, Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback, bool addPhysCollider = false)
         {
             return LoadModel(teamspace, model, null, opaqueShader, transparentShader, callback);
         }

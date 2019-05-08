@@ -71,7 +71,7 @@ public class ExampleScript : MonoBehaviour {
          * Sample shaders and shader controller are provided within this project to demonstrate how 
          * to create a basic shader that works with 3D Repo meshes.
          */
-        models = client.LoadModel(teamspace, modelID, Shader.Find("3DRepo/Standard"), Shader.Find("3DRepo/StandardTransparent"), AttachShaderComponent);
+        models = client.LoadModel(teamspace, modelID, Shader.Find("3DRepo/Standard"), Shader.Find("3DRepo/StandardTransparent"), AttachShaderComponent, true);
 
 
         //DisplayModelInfo(models);
