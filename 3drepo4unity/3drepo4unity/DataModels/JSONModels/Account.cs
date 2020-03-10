@@ -13,7 +13,7 @@
  *
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  */
 
@@ -21,15 +21,14 @@ using System;
 
 namespace RepoForUnity.DataModels.JSONModels
 {
-
     /// <summary>
     /// Defines the parameters required to form a login request
     /// </summary>
     [Serializable]
     internal class LoginParameters
     {
-        public string username;
-        public string password;
+        public string username = null;
+        public string password = null;
     }
 
     /// <summary>
@@ -38,8 +37,7 @@ namespace RepoForUnity.DataModels.JSONModels
     [Serializable]
     internal class LoginResponse
     {
-        public string username;
-        public UserRole[] roles;
+        public string username = null;
     }
 
     /// <summary>
@@ -48,21 +46,21 @@ namespace RepoForUnity.DataModels.JSONModels
     [Serializable]
     internal class UserRole
     {
-        public string db;
-        public string role;
+        public string db = null;
+        public string role = null;
     }
 
     [Serializable]
     internal class Version
     {
-        public string VERSION;
-        public PluginVersionInfo unitydll;
+        public string VERSION = null;
+        public PluginVersionInfo unitydll = null;
     }
 
     [Serializable]
     internal class PluginVersionInfo
     {
-        public string current;
-        public string[] supported;
+        public string current = null;
+        public string[] supported = null;
     }
 }

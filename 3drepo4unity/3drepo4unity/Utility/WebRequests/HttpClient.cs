@@ -13,7 +13,7 @@
  *
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  */
 
@@ -40,6 +40,7 @@ namespace RepoForUnity.Utility
 
         //internal string cookie = null;
         private CookieContainer cookies;
+
         private Dictionary<string, Cookie> cookieDict;
 
         protected string domain;
@@ -98,7 +99,6 @@ namespace RepoForUnity.Utility
 
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-
             Stream responseStream = response.GetResponseStream();
 
             StreamReader responseReader = new StreamReader(responseStream);
@@ -130,7 +130,7 @@ namespace RepoForUnity.Utility
         }
 
         /// <summary>
-        /// Sends a GET request for json data to the specified URI and deserialises the response string into an object of type T. 
+        /// Sends a GET request for json data to the specified URI and deserialises the response string into an object of type T.
         /// If this HTTPClient instance has a cookie, it is added to the GET request header.
         /// </summary>
         protected T HttpGetJson<T>(string uri, int tries = 1)
@@ -159,19 +159,17 @@ namespace RepoForUnity.Utility
                 });
                 return JsonMapper.ToObject<T>(responseData);
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 if (--tries == 0)
                     throw;
 
                 return HttpGetJson<T>(uri, tries);
             }
-
-
         }
 
         /// <summary>
-        /// Sends a GET request to the specified URI and returns a Stream of bytes. 
+        /// Sends a GET request to the specified URI and returns a Stream of bytes.
         /// If this HTTPClient instance has a cookie, it is added to the GET request header.
         /// </summary>
         /// <param name="uri"></param>
@@ -205,12 +203,9 @@ namespace RepoForUnity.Utility
                         memStream.Write(buffer, 0, byteCount);
 
                         total += byteCount;
-                        
                     } while (byteCount > 0);
                     request.Abort();
-
                 }
-
 
                 return memStream;
             }
@@ -221,10 +216,7 @@ namespace RepoForUnity.Utility
 
                 return HttpGetURI(uri, tries);
             }
-
         }
-
-
 
         protected static bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
@@ -282,8 +274,5 @@ namespace RepoForUnity.Utility
 
             return acceptCertificate;
         }
-
-
     }
-    
 }

@@ -13,7 +13,7 @@
  *
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  */
 
@@ -25,114 +25,113 @@ namespace RepoForUnity.DataModels.JSONModels
     [Serializable]
     internal class ModelAssetInfo
     {
-        public AssetInfo[] models;
+        public AssetInfo[] models = null;
     }
 
     [Serializable]
     internal class AssetInfo
     {
-        public string[] assets;
-        public string[] vrAssets;
-        public string[] jsonFiles;
-        public double[] offset;
-        public string model;
-        public string database;
+        public string[] assets = null;
+        public string[] vrAssets = null;
+        public string[] jsonFiles = null;
+        public double[] offset = null;
+        public string model = null;
+        public string database = null;
     }
 
     [Serializable]
     internal class Mapping
     {
-        public string name;
-        public string sharedId;
-        public float[] min;
-        public float[] max;
-        public string[] usage;
+        public string name = null;
+        public string sharedId = null;
+        public float[] min = null;
+        public float[] max = null;
+        public string[] usage = null;
     }
 
     [Serializable]
     internal class AssetMapping
     {
-        public int numberOfIds;
-        public int maxGeoCount;
-        public Mapping[] mapping;
+        public int numberOfIds = 0;
+        public int maxGeoCount = 0;
+        public Mapping[] mapping = null;
     }
 
     [Serializable]
     internal class ModelSettings
     {
-        public string name;
-        public ModelSettingsProperties properties;
-        public SurveyPoint[] surveyPoints;
-        public float angleFromNorth;
+        public string name = null;
+        public ModelSettingsProperties properties = null;
+        public SurveyPoint[] surveyPoints = null;
+        public float angleFromNorth = 0;
     }
 
     [Serializable]
     internal class SurveyPoint
     {
-        public float[] position;
-        public float[] latLong;
+        public float[] position = null;
+        public float[] latLong = null;
     }
 
     [Serializable]
     internal class ModelSettingsProperties
     {
-        public string unit;
+        public string unit = null;
     }
-
 
     [Serializable]
     internal class TreeWrapper
     {
-        public FullTree mainTree;
+        public FullTree mainTree = null;
     }
 
     [Serializable]
     internal class FullTree
     {
-        public TreeNode nodes;
+        public TreeNode nodes = null;
     }
 
     [Serializable]
     public class TreeNode
     {
-        public string name;
-        public string path;
-        public string _id;
-        public string shared_id;
-        public string type;
-        public TreeNode[] children;
-        public string[] meta;
+        public string name = null;
+        public string path = null;
+        public string _id = null;
+        public string shared_id = null;
+        public string type = null;
+        public TreeNode[] children = null;
+        public string[] meta = null;
     }
 
     [Serializable]
     internal class MetadataWrapper
     {
-        public Metadata[] meta;
+        public Metadata[] meta = null;
     }
 
     [Serializable]
     public class Metadata
     {
-        public Dictionary<String, object> metadata;
+        public Dictionary<String, object> metadata = null;
     }
 
     [Serializable]
     internal class MetaSearchWrapper
     {
-        public MetaSearchResult[] data;
+        public MetaSearchResult[] data = null;
     }
 
     [Serializable]
     public class MetaSearchResult
     {
-        public string _id;
-        public SearchValue metadata;
-        public string[] parents;
+        public string _id = null;
+        public SearchValue metadata = null;
+        public string[] parents = null;
     }
-    
+
     [Serializable]
     public class SearchValue
     {
-        public object value;
+        public object value = null;
     }
 }

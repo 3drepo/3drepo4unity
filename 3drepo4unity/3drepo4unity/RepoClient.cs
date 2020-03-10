@@ -13,7 +13,7 @@
  *
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  */
 
@@ -24,6 +24,7 @@ using UnityEngine;
 namespace RepoForUnity
 {
     public delegate void AddShaderControllerCallback(GameObject obj, int height, int width);
+
     public class RepoClient
     {
         private RepoWebClientInterface client;
@@ -32,8 +33,9 @@ namespace RepoForUnity
 
         /**
          * RepoClient constructor.
-         * This instantiates the interfacing layer between the Unity Game and 3D Repo Web Services 
+         * This instantiates the interfacing layer between the Unity Game and 3D Repo Web Services
          */
+
         public RepoClient()
         {
             client = new RepoWebClientInterface();
@@ -48,24 +50,16 @@ namespace RepoForUnity
          * @params password password for username.
          * @return returns true upon success
          */
+
         public bool Connect(string username, string password)
         {
-            if(!client.VersionCheck())
+            if (!client.VersionCheck())
             {
                 throw new RepoUnsupportedException();
             }
             account = client.Login(username, password);
 
             return account != null;
-        }
-
-        /**
-         * Get the list of teamspace the user has access to 
-         * @return returns an array of teamspace names
-         */
-        public string[] GetTeamspaces()
-        {
-            return account.Teamspaces;
         }
 
         /**
@@ -78,6 +72,7 @@ namespace RepoForUnity
          * @params callback a callback function to attach a controller to control the shader (null if not needed)
          * @return returns the an array of models, containing the model information
          */
+
         public Model[] LoadModel(string teamspace, string model, string revisionId,
             Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback, bool addPhysCollider = false)
         {
@@ -90,6 +85,7 @@ namespace RepoForUnity
          * @param model where the model resides
          * @return returns the object, Model, containing the model information
          */
+
         public Model[] LoadModel(string teamspace, string model, Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback, bool addPhysCollider = false)
         {
             return LoadModel(teamspace, model, null, opaqueShader, transparentShader, callback);

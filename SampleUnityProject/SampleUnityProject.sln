@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleUnityProject", "SampleUnityProject.csproj", "{9954D553-D73E-A1AE-469A-FBE552C85E10}"
 EndProject
 Global

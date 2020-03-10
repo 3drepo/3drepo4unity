@@ -13,7 +13,7 @@
  *
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  */
 
@@ -24,24 +24,10 @@ namespace RepoForUnity.DataModels
     internal class Account
     {
         internal readonly string username;
-        private string[] teamspaces;
-
-        public string[] Teamspaces
-        {
-            get
-            {
-                return teamspaces;
-            }
-        }
 
         internal Account(LoginResponse response)
         {
             username = response.username;
-            teamspaces = new string[response.roles.Length];
-            for(int i = 0; i < response.roles.Length; ++i)
-            {
-                teamspaces[i] = response.roles[i].db;
-            }
         }
     }
 }
