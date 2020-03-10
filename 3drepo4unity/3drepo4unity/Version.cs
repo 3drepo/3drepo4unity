@@ -13,14 +13,14 @@
  *
  *	You should have received a copy of the GNU Affero General Public License
  *	along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *
  */
 
 namespace RepoForUnity
 {
-    class Globals
+    internal class Globals
     {
-        internal static string version = "2.8.0";
+        internal static string version = "4.4.0";
     }
 }
