@@ -43,9 +43,9 @@ public class ExampleScript : MonoBehaviour
         //Login
         if (client.Connect(username, password))
         {
-            var tsList = "Connected! Teamspaces this user has access to: ";
-
-            Debug.Log(tsList);
+            Debug.Log("Connected!");
+            //NOTE: to find out the which teamspaces/models the user have access to, make an API call to get the user's account information
+            //       see https://3drepo.github.io/3drepo.io/#api-Account-listInfo
             LoadModel();
         }
         else
