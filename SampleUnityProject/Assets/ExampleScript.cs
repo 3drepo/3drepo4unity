@@ -24,8 +24,7 @@ public class ExampleScript : MonoBehaviour
 {
     private RepoForUnity.RepoClient client;
 
-    public string username;
-    public string password;
+    public string apikey;
     public string teamspace;
     public string modelID;
 
@@ -41,7 +40,7 @@ public class ExampleScript : MonoBehaviour
     private void Login()
     {
         //Login
-        if (client.Connect(username, password))
+        if (client.Connect(apikey))
         {
             Debug.Log("Connected!");
             //NOTE: to find out the which teamspaces/models the user have access to, make an API call to get the user's account information
