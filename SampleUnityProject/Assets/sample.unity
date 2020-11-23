@@ -197,6 +197,7 @@ MonoBehaviour:
   apikey: 7d0573c6142a95477f9fb7160a10c721
   teamspace: Repo3DDemo
   modelID: 33ddc9e0-2285-11eb-ae7e-b1c52fa5ba58
+  subModelID: 33aea390-2285-11eb-ae7e-b1c52fa5ba58
 --- !u!4 &597467995
 Transform:
   m_ObjectHideFlags: 0
