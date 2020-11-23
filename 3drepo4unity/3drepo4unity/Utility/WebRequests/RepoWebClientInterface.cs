@@ -53,12 +53,23 @@ namespace RepoForUnity.Utility
 
             var response = HttpPostJson<LoginParameters, LoginResponse>(domain + "login", loginParams);
 
-
             Account account = null;
 
             if (response != null)
                 account = new Account(response);
             
+            return account;
+        }
+
+        internal Account GetCurrentAccount()
+        {
+            var response = HttpGetJson<LoginResponse>(domain + "me");
+            Account account = null;
+            if(response != null)
+            {
+                account = new Account(response);
+            }
+
             return account;
         }
 
