@@ -24,10 +24,10 @@ public class ExampleScript : MonoBehaviour
 {
     private RepoForUnity.RepoClient client;
 
-    public string username;
-    public string password;
+    public string apikey;
     public string teamspace;
     public string modelID;
+    public string subModelID;
 
     internal RepoForUnity.Model[] models;
 
@@ -41,7 +41,7 @@ public class ExampleScript : MonoBehaviour
     private void Login()
     {
         //Login
-        if (client.Connect(username, password))
+        if (client.Connect(apikey))
         {
             Debug.Log("Connected!");
             //NOTE: to find out the which teamspaces/models the user have access to, make an API call to get the user's account information
@@ -91,7 +91,7 @@ public class ExampleScript : MonoBehaviour
          * The following illustrates how you would perform a metadata search.
          * Here, I search for all metadata which has a property "Floor".
          */
-        var model = models.FirstOrDefault(item => item.modelId == "148333e9-e189-473c-9ac6-cc6adc790ab6");
+        var model = models.FirstOrDefault(item => item.modelId == subModelID);
         var results = model.GetAllMetadataWithField("Floor");
         Debug.Log(results.Length + " entries have the property \"Floor\"");
     }
@@ -111,9 +111,10 @@ public class ExampleScript : MonoBehaviour
          * Then identify the supermesh it belongs to. This is the name of the parent GameObject.
          */
 
-        var model = models.FirstOrDefault(item => item.modelId == "148333e9-e189-473c-9ac6-cc6adc790ab6");
-        var meshID = model.GetSubMeshId("153cf665-2c84-4ff9-a9e2-ba495af8e6dc", 0);
-        Debug.Log("[" + model.teamspace + "." + model.name + "]The first mesh within 153cf665-2c84-4ff9-a9e2-ba495af8e6dc is " + meshID);
+        var model = models.FirstOrDefault(item => item.modelId == subModelID);
+        var superMesh = "2967230f-67fa-45dc-9686-161e45c7c8a2";
+        var meshID = model.GetSubMeshId(superMesh, 0);
+        Debug.Log("[" + model.teamspace + "." + model.name + "]The first mesh within " + superMesh + " is " + meshID);
 
         GetMetadataInfo(model, meshID);
     }

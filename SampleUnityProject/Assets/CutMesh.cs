@@ -1,23 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CutMesh : MonoBehaviour {
+public class CutMesh : MonoBehaviour
+{
     public ExampleScript rootScript = null;
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    private void Update()
+    {
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {
             CutOutMesh();
         }
     }
 
-    void CutOutMesh()
+    private void CutOutMesh()
     {
-        var objectModel = "3aa45665-479c-464d-bd1c-0a174c034b78";
-        var objectId = "08e2c5ef-3fea-4f4e-a860-ac3c18ddfe83";
+        var objectModel = rootScript.subModelID;
+        var objectId = "19050393-9e9c-4a40-b4d3-62cefa4bbaf2";
 
         if (!rootScript)
         {
@@ -30,13 +31,14 @@ public class CutMesh : MonoBehaviour {
         {
             var mesh = GetMesh(model.GetMeshLocation(objectId));
             DisplayMesh(objectModel + "." + objectId, mesh);
-        } else
+        }
+        else
         {
             Debug.LogError("[CutMesh.cs] Cannot find model " + objectModel);
         }
     }
 
-    void  DisplayMesh(string name, Mesh mesh)
+    private void DisplayMesh(string name, Mesh mesh)
     {
         GameObject obj = new GameObject(name);
         obj.transform.parent = transform;
@@ -44,15 +46,14 @@ public class CutMesh : MonoBehaviour {
         obj.AddComponent<MeshFilter>().mesh = mesh;
         obj.AddComponent<MeshRenderer>().material = new Material(Shader.Find("Diffuse"));
 
-        //hide all other models 
-        foreach(var model in rootScript.models)
+        //hide all other models
+        foreach (var model in rootScript.models)
         {
             model.root.SetActive(false);
         }
-
     }
 
-    Mesh GetMesh(RepoForUnity.MeshLocation[] meshLocations)
+    private Mesh GetMesh(RepoForUnity.MeshLocation[] meshLocations)
     {
         List<Vector3> vertices = new List<Vector3>();
         List<Vector3> normal = new List<Vector3>();
@@ -64,8 +65,9 @@ public class CutMesh : MonoBehaviour {
             var meshFilter = go.GetComponent<MeshFilter>();
             var superMesh = meshFilter.mesh;
             Dictionary<int, int> vIndexChange = new Dictionary<int, int>();
-            for (int i = 0; i <  superMesh.uv2.Length; ++i) {
-                if(superMesh.uv2[i].y == entry.index)
+            for (int i = 0; i < superMesh.uv2.Length; ++i)
+            {
+                if (superMesh.uv2[i].y == entry.index)
                 {
                     vIndexChange[i] = vertices.Count;
                     vertices.Add(superMesh.vertices[i]);
@@ -73,7 +75,7 @@ public class CutMesh : MonoBehaviour {
                 }
             }
 
-            for(int i = 0; i < superMesh.triangles.Length; ++i)
+            for (int i = 0; i < superMesh.triangles.Length; ++i)
             {
                 var index = superMesh.triangles[i];
                 if (vIndexChange.ContainsKey(index))

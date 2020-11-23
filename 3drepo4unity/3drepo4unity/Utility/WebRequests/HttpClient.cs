@@ -38,6 +38,8 @@ namespace RepoForUnity.Utility
         internal IWebProxy proxy;
         internal int timeout_ms;
 
+        internal string apiKey;
+
         //internal string cookie = null;
         private CookieContainer cookies;
 
@@ -63,6 +65,21 @@ namespace RepoForUnity.Utility
             cookieDict = new Dictionary<string, Cookie>();
 
             cookies = new CookieContainer();
+
+            apiKey = null;
+        }
+
+        internal void SetApiKey(string apiKey)
+        {
+            this.apiKey = apiKey;
+        }
+
+        private void AppendApiKey(ref string uri)
+        {
+            if(apiKey != null)
+            {
+                uri += $"?key={apiKey}";
+            }
         }
 
         /// <summary>
@@ -77,6 +94,8 @@ namespace RepoForUnity.Utility
         /// <returns>The response from the server, deserialised into T_out</returns>
         protected T_out HttpPostJson<T_in, T_out>(string uri, T_in data)
         {
+            AppendApiKey(ref uri);
+
             // put together the json object with the login form data
             string parameters = JsonMapper.ToJson(data);
             byte[] postDataBuffer = Encoding.UTF8.GetBytes(parameters);
@@ -135,6 +154,8 @@ namespace RepoForUnity.Utility
         /// </summary>
         protected T HttpGetJson<T>(string uri, int tries = 1)
         {
+            AppendApiKey(ref uri);
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.Proxy = proxy;
             request.Method = "GET";
@@ -176,6 +197,8 @@ namespace RepoForUnity.Utility
         /// <returns></returns>
         protected virtual Stream HttpGetURI(string uri, int tries = 1)
         {
+            AppendApiKey(ref uri);
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
             request.Proxy = proxy;
             request.Method = "GET";
