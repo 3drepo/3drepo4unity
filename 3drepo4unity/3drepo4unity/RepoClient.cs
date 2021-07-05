@@ -108,7 +108,7 @@ namespace RepoForUnity
 
         public Model[] LoadModel(string teamspace, string model, Shader opaqueShader, Shader transparentShader, AddShaderControllerCallback callback, bool addPhysCollider = false)
         {
-            return LoadModel(teamspace, model, null, opaqueShader, transparentShader, callback);
+            return LoadModel(teamspace, model, null, opaqueShader, transparentShader, callback, addPhysCollider);
         }
     }
 }
