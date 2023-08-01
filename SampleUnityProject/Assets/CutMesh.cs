@@ -18,7 +18,7 @@ public class CutMesh : MonoBehaviour
     private void CutOutMesh()
     {
         var objectModel = rootScript.subModelID;
-        var objectId = "19050393-9e9c-4a40-b4d3-62cefa4bbaf2";
+        var objectId = "a0163989-d402-4c5c-96ab-8a81f4b971b2";
 
         if (!rootScript)
         {

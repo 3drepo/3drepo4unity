@@ -47,7 +47,7 @@ namespace RepoForUnity.Utility
 
         protected string domain;
 
-        internal HttpClient(string domain = "https://api1.www.3drepo.io/")
+        internal HttpClient(string domain)
         {
             if (domain[domain.Length - 1] != '/') domain += "/";
 

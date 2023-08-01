@@ -31,7 +31,7 @@ namespace RepoForUnity.Utility
          * By default, the URL of the API service is set to Production environment of 3D Repo IO.
          * @params domain URL of the API service.
          */
-        internal RepoWebClientInterface(string domain = "https://api1.www.3drepo.io/api") 
+        internal RepoWebClientInterface(string domain = "https://www.3drepo.io/api") 
             : base(domain)
         {
            
